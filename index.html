@@ -3,115 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Sprint - Cerdas Cermat</title>
+    <title>Math Sprint - Versi Stabil</title>
     <style>
-        :root {
-            --primary: #06b6d4;
-            --accent: #f59e0b;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-
+        /* Desain Terang & Bersih */
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            margin: 0;
         }
 
         #game-card {
-            background: var(--card);
-            width: 100%;
+            background: white;
+            width: 90%;
             max-width: 400px;
-            padding: 2rem;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #ddd;
         }
 
         /* Timer Bar */
-        .timer-container {
+        .timer-bg {
             width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            position: absolute;
-            top: 0;
-            left: 0;
+            height: 10px;
+            background: #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
         }
-        #timer-bar {
+        #timer-fill {
             height: 100%;
             width: 100%;
-            background: var(--primary);
+            background: #007bff;
             transition: width 0.1s linear;
         }
 
-        .score-badge {
-            background: var(--accent);
-            color: var(--bg);
-            padding: 5px 15px;
-            border-radius: 20px;
+        .score-info {
             font-weight: bold;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-bottom: 20px;
+            color: #007bff;
+            margin-bottom: 10px;
         }
 
-        .equation {
-            font-size: 3.5rem;
-            font-weight: 800;
+        #equation {
+            font-size: 3rem;
+            font-weight: bold;
             margin: 20px 0;
-            letter-spacing: -2px;
+            color: #333;
         }
 
-        .options-grid {
+        .grid-jawaban {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 30px;
         }
 
-        .opt-btn {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
-            color: white;
+        .btn-jawaban {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
             padding: 20px;
-            border-radius: 18px;
             font-size: 1.5rem;
             font-weight: bold;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
 
-        .opt-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
-        .opt-btn:active { transform: scale(0.95); }
+        .btn-jawaban:hover { background: #e9ecef; }
 
-        /* Status Colors */
-        .correct { background: #10b981 !important; border-color: #10b981 !important; }
-        .wrong { background: #ef4444 !important; border-color: #ef4444 !important; animation: shake 0.4s; }
+        /* Warna saat klik */
+        .benar { background-color: #28a745 !important; color: white; border-color: #28a745; }
+        .salah { background-color: #dc3545 !important; color: white; border-color: #dc3545; }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
+        .sembunyi { display: none; }
 
-        .hidden { display: none; }
-
-        .btn-restart {
-            background: var(--primary);
+        button#restart-btn {
+            background: #007bff;
             color: white;
             border: none;
             padding: 15px 30px;
-            border-radius: 12px;
-            font-weight: bold;
+            border-radius: 10px;
+            font-size: 1rem;
             cursor: pointer;
             width: 100%;
             margin-top: 20px;
@@ -121,133 +98,111 @@
 <body>
 
 <div id="game-card">
-    <div id="quiz-screen">
-        <div class="timer-container"><div id="timer-bar"></div></div>
-        <div class="score-badge">SKOR: <span id="score-text">0</span></div>
-        <p style="color: #94a3b8; font-size: 0.9rem;">Berapa hasil dari:</p>
-        <div class="equation" id="display-equation">12 + 5</div>
-        
-        <div class="options-grid" id="options-container">
+    <div id="layar-game">
+        <div class="timer-bg"><div id="timer-fill"></div></div>
+        <div class="score-info">Skor: <span id="skor-skrg">0</span></div>
+        <div id="equation">...</div>
+        <div class="grid-jawaban" id="wadah-tombol">
             </div>
     </div>
 
-    <div id="result-screen" class="hidden">
-        <h1 style="font-size: 2.5rem;">Waktu Habis! ⏰</h1>
-        <p style="margin: 15px 0; opacity: 0.8;">Skor tertinggi kamu kali ini:</p>
-        <div style="font-size: 5rem; font-weight: 900; color: var(--accent);" id="final-score">0</div>
-        <button class="btn-restart" onclick="startGame()">Main Lagi</button>
+    <div id="layar-hasil" class="sembunyi">
+        <h1>Waktu Habis!</h1>
+        <p>Skor Akhir Kamu:</p>
+        <h2 style="font-size: 4rem; color: #007bff;" id="skor-akhir">0</h2>
+        <button id="restart-btn" onclick="mulaiLagi()">Main Lagi</button>
     </div>
 </div>
 
 <script>
-    let score = 0;
-    let correctAnswer = 0;
-    let timeLeft = 100;
-    let timerInterval;
-    let isGameOver = false;
+    let angkaBenar = 0;
+    let skor = 0;
+    let waktu = 100;
+    let timer;
 
-    function startGame() {
-        score = 0;
-        timeLeft = 100;
-        isGameOver = false;
-        document.getElementById('score-text').innerText = score;
-        document.getElementById('quiz-screen').classList.remove('hidden');
-        document.getElementById('result-screen').classList.add('hidden');
-        
-        startTimer();
-        nextQuestion();
-    }
+    // Fungsi untuk membuat soal baru
+    function buatSoal() {
+        const a = Math.floor(Math.random() * 15) + 1;
+        const b = Math.floor(Math.random() * 15) + 1;
+        const tipe = Math.random() > 0.5 ? '+' : '-';
 
-    function startTimer() {
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            timeLeft -= 0.5; // Kecepatan berkurang
-            document.getElementById('timer-bar').style.width = timeLeft + "%";
-            
-            if (timeLeft <= 0) {
-                endGame();
-            }
-        }, 100);
-    }
-
-    function nextQuestion() {
-        if(isGameOver) return;
-
-        // Leveling: Angka semakin besar seiring bertambahnya skor
-        const range = 10 + Math.floor(score / 2);
-        const a = Math.floor(Math.random() * range) + 1;
-        const b = Math.floor(Math.random() * range) + 1;
-        const operators = ['+', '-'];
-        const op = operators[Math.floor(Math.random() * operators.length)];
-
-        if (op === '+') {
-            correctAnswer = a + b;
+        if (tipe === '+') {
+            angkaBenar = a + b;
+            document.getElementById('equation').innerText = `${a} + ${b}`;
         } else {
-            // Pastikan hasil pengurangan tidak negatif agar mudah
-            const max = Math.max(a, b);
-            const min = Math.min(a, b);
-            correctAnswer = max - min;
-            document.getElementById('display-equation').innerText = `${max} - ${min}`;
-        }
-        
-        if (op === '+') {
-            document.getElementById('display-equation').innerText = `${a} + ${b}`;
+            const besar = Math.max(a, b);
+            const kecil = Math.min(a, b);
+            angkaBenar = besar - kecil;
+            document.getElementById('equation').innerText = `${besar} - ${kecil}`;
         }
 
-        generateOptions(correctAnswer);
+        tampilkanTombol();
     }
 
-    function generateOptions(correct) {
-        const container = document.getElementById('options-container');
-        container.innerHTML = '';
-        
-        let choices = [correct];
-        while (choices.length < 4) {
-            // Buat jawaban salah yang mirip dengan jawaban benar
-            let wrong = correct + (Math.floor(Math.random() * 10) - 5);
-            if (!choices.includes(wrong) && wrong >= 0) {
-                choices.push(wrong);
-            }
+    // Fungsi menampilkan pilihan jawaban
+    function tampilkanTombol() {
+        const wadah = document.getElementById('wadah-tombol');
+        wadah.innerHTML = ''; // Kosongkan tombol lama
+
+        let pilihan = [angkaBenar];
+        while (pilihan.length < 4) {
+            let acak = angkaBenar + (Math.floor(Math.random() * 10) - 5);
+            if (!pilihan.includes(acak) && acak >= 0) pilihan.push(acak);
         }
 
-        // Acak posisi tombol
-        choices.sort(() => Math.random() - 0.5);
+        // Acak posisi
+        pilihan.sort(() => Math.random() - 0.5);
 
-        choices.forEach(val => {
+        pilihan.forEach(angka => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = val;
-            btn.onclick = () => checkAnswer(val, btn);
-            container.appendChild(btn);
+            btn.className = 'btn-jawaban';
+            btn.innerText = angka;
+            btn.onclick = () => cekJawaban(angka, btn);
+            wadah.appendChild(btn);
         });
     }
 
-    function checkAnswer(selected, btn) {
-        if (isGameOver) return;
-
-        if (selected === correctAnswer) {
-            score += 10;
-            timeLeft = Math.min(timeLeft + 15, 100); // Bonus waktu jika benar
-            btn.classList.add('correct');
-            document.getElementById('score-text').innerText = score;
-            
-            setTimeout(nextQuestion, 200);
+    function cekJawaban(dipilih, el) {
+        if (dipilih === angkaBenar) {
+            skor += 10;
+            waktu = Math.min(waktu + 10, 100); // Tambah waktu jika benar
+            document.getElementById('skor-skrg').innerText = skor;
+            el.classList.add('benar');
+            setTimeout(buatSoal, 200);
         } else {
-            btn.classList.add('wrong');
-            timeLeft -= 20; // Hukuman waktu jika salah
+            el.classList.add('salah');
+            waktu -= 15; // Kurangi waktu jika salah
         }
     }
 
-    function endGame() {
-        isGameOver = true;
-        clearInterval(timerInterval);
-        document.getElementById('quiz-screen').classList.add('hidden');
-        document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('final-score').innerText = score;
+    function jalankanTimer() {
+        timer = setInterval(() => {
+            waktu -= 1;
+            document.getElementById('timer-fill').style.width = waktu + "%";
+            if (waktu <= 0) {
+                clearInterval(timer);
+                document.getElementById('layar-game').classList.add('sembunyi');
+                document.getElementById('layar-hasil').classList.remove('sembunyi');
+                document.getElementById('skor-akhir').innerText = skor;
+            }
+        }, 150);
     }
 
-    // Mulai saat halaman dimuat
-    startGame();
+    function mulaiLagi() {
+        skor = 0;
+        waktu = 100;
+        document.getElementById('skor-skrg').innerText = "0";
+        document.getElementById('layar-game').classList.remove('sembunyi');
+        document.getElementById('layar-hasil').classList.add('sembunyi');
+        clearInterval(timer);
+        jalankanTimer();
+        buatSoal();
+    }
+
+    // Jalankan otomatis saat web dibuka
+    window.onload = function() {
+        mulaiLagi();
+    };
 </script>
 
 </body>
